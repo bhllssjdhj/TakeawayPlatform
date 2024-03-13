@@ -14,8 +14,9 @@ spring:
       password: ${sky.datasource.password}
 
 mybatis:
-  #mapper配置文件
+  #XML 映射文件的路径。
   mapper-locations: classpath:mapper/*.xml
+  #搜索类型别名的包名。
   type-aliases-package: com.sky.entity
   configuration:
     #开启驼峰命名
