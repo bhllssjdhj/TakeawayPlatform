@@ -41,6 +41,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/login")
+    @ApiOperation("员工登录")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
@@ -65,8 +66,7 @@ public class EmployeeController {
     }
 
     /**
-     * 退出
-     *
+     * 员工退出
      * @return
      */
     @PostMapping("/logout")
@@ -115,4 +115,46 @@ public class EmployeeController {
         employeeService.update(status, id);
         return Result.success();
     }
+
+
+    /**
+     * 根据id传回员工信息
+     * @param id
+     * @return
+     * //@RequestBody用于接收前端传递给后端的、JSON对象的字符串，这些数据位于请求体中
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id传回员工信息")
+    public Result<Employee> getById(@PathVariable("id") Long id){
+        log.info("根据id传回员工信息:{}",id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 编辑员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping("")
+    @ApiOperation("编辑员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工信息:{}", employeeDTO.getName());
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

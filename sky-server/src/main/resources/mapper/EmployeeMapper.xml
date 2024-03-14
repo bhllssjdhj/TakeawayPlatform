@@ -13,6 +13,7 @@
         order by create_time desc
     </select>
 
+
     <update id="update" parameterType="Employee">
         update employee
         <set>
@@ -31,16 +32,16 @@
             <if test="sex != null and sex != ''">
                 sex = #{sex},
             </if>
-            <if test="idNumber != null and idNumber != ''">
-                idNumber = #{idNumber},
+            <if test="idNumber != null">
+                id_number = #{idNumber},
             </if>
-            <if test="updateTime != null and updateTime != ''">
-                updateTime = #{updateTime},
+            <if test="updateTime != null">
+                update_time = #{updateTime},
             </if>
-            <if test="updateUser != null and updateUser != ''">
-                updateUser = #{updateUser},
+            <if test="updateUser != null">
+                update_user = #{updateUser},
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
             status = #{status},
             </if>
         </set>
