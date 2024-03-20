@@ -21,9 +21,10 @@ public class AliOssUtil {
 
     /**
      * 文件上传
+     * 代码从阿里云提供https://help.aliyun.com/zh/oss/developer-reference/getting-started?spm=a2c4g.11186623.0.0.14d95183LmnqbC
      *
-     * @param bytes
-     * @param objectName
+     * @param bytes 文件string流
+     * @param objectName 文件名
      * @return
      */
     public String upload(byte[] bytes, String objectName) {
@@ -62,7 +63,6 @@ public class AliOssUtil {
                 .append(objectName);
 
         log.info("文件上传到:{}", stringBuilder.toString());
-
         return stringBuilder.toString();
     }
 }
