@@ -22,6 +22,7 @@ import com.github.pagehelper.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.Utilities;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,7 +75,7 @@ public class DishServiceImpl implements DishService {
 
     }
 
-
+    @Transactional
     public void delete(List<Long> id) {
         //判断能否删除，查询id是否正在销售
         for (Long i : id){
@@ -99,6 +100,45 @@ public class DishServiceImpl implements DishService {
 
     }
 
+    /**
+     * 根据id查询dish及口味flavor数据
+     * @param id
+     * @return
+     */
+    public DishVO getByIdWithFlavor(Long id) {
+        //查询dish表对应数据
+        Dish dish = dishMapper.getById(id);
+        //查询flavor表
+        List<DishFlavor> dishFlavor = dishFlavorMapper.getByDishId(id);
+        //封装到DishVO并返回
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+//        BeanUtils.copyProperties(dishFlavor, dishVO);
+        dishVO.setFlavors(dishFlavor);
+        return dishVO;
+    }
+
+    /**
+     * 修改菜品dish信息及口味flavor数据
+     * 类似上面的insert，这里的逻辑是先删除原来的flavor，再插入新的flavor
+     * @param dishDTO
+     */
+    @Transactional
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        dishFlavorMapper.deleteByDishId(dish.getId());
+        //向dish_flavor表中插入数据
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        if (flavors != null && !flavors.isEmpty()) {
+            flavors.forEach(dishFlavor -> {
+                dishFlavor.setDishId(dishDTO.getId());
+            });
+        }
+        dishFlavorMapper.insertFlavor(flavors);
+    }
 
 
 }
