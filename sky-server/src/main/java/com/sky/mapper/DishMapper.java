@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import com.github.pagehelper.Page;
 
+import java.util.List;
+
 @Mapper
 public interface DishMapper {
     /**
@@ -47,4 +49,10 @@ public interface DishMapper {
      * @param id
      */
     void deleteById(Long id);
+
+    /**
+     * 根据id在一条SQL内删除dish表
+     * @param id
+     */
+    void deleteAllById(List<Long> id);
 }
