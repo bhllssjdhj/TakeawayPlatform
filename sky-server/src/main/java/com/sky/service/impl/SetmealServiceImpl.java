@@ -20,8 +20,7 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class SetmealServiceImpl implements SetmealService {
@@ -80,10 +79,48 @@ public class SetmealServiceImpl implements SetmealService {
         setmealMapper.deleteMealById(id);
         setmealDishMapper.deleteBySetmealId(id);
 
+    }
 
+    /**
+     * 根据id查询套餐和套餐菜品关系
+     *
+     * @param id
+     * @return
+     */
+    public SetmealVO getByIdWithDish(Long id) {
+        Setmeal setmeal = setmealMapper.getById(id);
+        List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
 
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal, setmealVO);
+        setmealVO.setSetmealDishes(setmealDishes);
 
-        //
+        return setmealVO;
+    }
 
+    /**
+     * 修改套餐
+     *
+     * @param setmealDTO
+     */
+    public void update(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+
+        //更新setmeal表的信息
+        setmealMapper.update(setmeal);
+
+        //删除对应的setmeal_dish表项，并添加新的项
+        List<Long> setmealId = Collections.singletonList(setmeal.getId());
+        setmealDishMapper.deleteBySetmealId(setmealId);
+
+        //讲前端传来的新setmealDishes按套餐setmealId加入表
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishes.forEach(setmealDish -> {
+            setmealId.forEach(setmealDish::setSetmealId);
+        });
+
+        //添加新的setmeal_dish表项
+        setmealDishMapper.addMealDish(setmealDTO.getSetmealDishes());
     }
 }
