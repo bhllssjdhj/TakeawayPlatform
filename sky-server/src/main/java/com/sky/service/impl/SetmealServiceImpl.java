@@ -6,9 +6,12 @@ import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.BaseException;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
@@ -29,6 +32,8 @@ public class SetmealServiceImpl implements SetmealService {
     private SetmealMapper setmealMapper;
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+    @Autowired
+    private DishMapper dishMapper;
 
     /**
      * 新建菜品
@@ -103,24 +108,53 @@ public class SetmealServiceImpl implements SetmealService {
      *
      * @param setmealDTO
      */
+    @Transactional
     public void update(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
 
         //更新setmeal表的信息
         setmealMapper.update(setmeal);
-
+        Long setmealId = setmeal.getId();
         //删除对应的setmeal_dish表项，并添加新的项
-        List<Long> setmealId = Collections.singletonList(setmeal.getId());
-        setmealDishMapper.deleteBySetmealId(setmealId);
+        List<Long> setmealIdList = Collections.singletonList(setmealId);
+        setmealDishMapper.deleteBySetmealId(setmealIdList);
 
-        //讲前端传来的新setmealDishes按套餐setmealId加入表
+        //将前端传来的新setmealDishes按套餐setmealId加入表，由于套餐内一定含有菜品，因此不必判断是否为空
         List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
-        setmealDishes.forEach(setmealDish -> {
-            setmealId.forEach(setmealDish::setSetmealId);
+        setmealDishes.forEach(
+                setmealDish -> {
+                    setmealDish.setSetmealId(setmealId);
         });
 
         //添加新的setmeal_dish表项
-        setmealDishMapper.addMealDish(setmealDTO.getSetmealDishes());
+        setmealDishMapper.addMealDish(setmealDishes);
+    }
+
+    /**
+     * 更改出售状态
+     * @param status
+     * @param id
+     */
+    @Transactional
+    public void statusChange(Integer status, Long id) {
+        Setmeal setmeal = setmealMapper.getById(id);
+        List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(setmeal.getId());
+
+        //当起售套餐时，若包括停售菜品dish则报错
+        if (status == StatusConstant.ENABLE)
+            setmealDishes.forEach(setmealDish -> {
+                Long dishId = setmealDish.getDishId();
+                Dish dish = dishMapper.getById(dishId);
+                if (dish.getStatus() == StatusConstant.DISABLE)
+                    throw new BaseException(MessageConstant.SETMEAL_ENABLE_FAILED);
+            });
+        //不包含，则改变setmeal状态
+        Setmeal setmealNew = Setmeal.builder()
+                .id(id)
+                .status(status)
+                .build();
+
+        setmealMapper.update(setmeal);
     }
 }

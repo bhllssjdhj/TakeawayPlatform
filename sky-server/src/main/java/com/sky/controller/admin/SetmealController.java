@@ -83,4 +83,18 @@ public class SetmealController {
         return Result.success();
     }
 
+    /**
+     * 更改出售状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("更改出售状态")
+    public Result statusChange(@PathVariable(value = "status") Integer status, @RequestParam Long id){
+        log.info("更改出售状态:{}", id);
+        setmealService.statusChange(status, id);
+        return Result.success();
+    }
+
 }
