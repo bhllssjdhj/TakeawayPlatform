@@ -3,6 +3,7 @@ package com.sky.controller.admin;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
@@ -26,6 +27,7 @@ public class DishController {
     //构造方法注入
     @Autowired
     private DishService dishService;
+
     /**
      * 新增菜品
      * @param dishDTO
@@ -99,4 +101,13 @@ public class DishController {
         dishService.updateStatus(status, id);
         return Result.success();
     }
+
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<Dish>> queryAllDishByCategoryId(@RequestParam(value = "categoryId") Long cId){
+        log.info("根据分类id查询菜品:{}",cId);
+        List<Dish> dishes = dishService.queryAllDishByCategoryId(cId);
+        return Result.success(dishes);
+    }
+
 }
