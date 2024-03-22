@@ -28,7 +28,7 @@ public class SetmealController {
     @ApiOperation("新建套餐")
     public Result addMeal(@RequestBody SetmealDTO setmealDTO){
         log.info("新建套餐：{}",setmealDTO.getName());
-        setmealService.addMeal(setmealDTO);
+        setmealService.addMealWithDishes(setmealDTO);
         return Result.success();
     }
 }

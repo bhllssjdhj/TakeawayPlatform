@@ -10,5 +10,5 @@ public interface SetmealService {
      * 新建套餐
      * @param setmealDTO
      */
-    void addMeal(SetmealDTO setmealDTO);
+    void addMealWithDishes(SetmealDTO setmealDTO);
 }

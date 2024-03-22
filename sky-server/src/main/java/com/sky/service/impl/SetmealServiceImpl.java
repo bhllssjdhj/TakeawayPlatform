@@ -26,7 +26,7 @@ public class SetmealServiceImpl implements SetmealService {
      * @param setmealDTO
      */
     @Transactional
-    public void addMeal(SetmealDTO setmealDTO) {
+    public void addMealWithDishes(SetmealDTO setmealDTO) {
         Setmeal setmeal = new Setmeal();
         BeanUtils.copyProperties(setmealDTO, setmeal);
         //更新setmeal套餐表
