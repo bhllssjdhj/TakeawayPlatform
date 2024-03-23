@@ -36,7 +36,6 @@ public class HttpClientUtil {
     public static String doGet(String url,Map<String,String> paramMap){
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-
         String result = "";
         CloseableHttpResponse response = null;
 
@@ -116,7 +115,6 @@ public class HttpClientUtil {
                 e.printStackTrace();
             }
         }
-
         return resultString;
     }
 
