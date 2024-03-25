@@ -59,12 +59,48 @@ public class ShopingCartServiceImpl implements ShoppoingCartService {
             shoppingCart.setCreateTime(LocalDateTime.now());
             shoppingCartMapper.insert(shoppingCart);
         }
+    }
+
+
+    public List<ShoppingCart> showCart() {
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        return list;
+    }
+
+
+    public void cleanCart() {
+        Long userId = BaseContext.getCurrentId();
+        shoppingCartMapper.cleanCart(userId);
+    }
+
+
+    public List<ShoppingCart> subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
+        Long userId = BaseContext.getCurrentId();
+        shoppingCart.setUserId(userId);
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+
+        if (list != null && !list.isEmpty()) {
+            ShoppingCart cartItem = list.get(0);
+            Integer number = cartItem.getNumber();
+            if (number > 1) {
+                cartItem.setNumber(cartItem.getNumber() - 1);
+                shoppingCartMapper.updateNumById(cartItem);
+            }
+            else {
+                shoppingCartMapper.deleteById(cartItem.getId());
+            }
+        }
 
 
 
 
 
-
-
+        return null;
     }
 }
