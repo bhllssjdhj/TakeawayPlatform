@@ -78,7 +78,7 @@ public class ShopingCartServiceImpl implements ShoppoingCartService {
     }
 
 
-    public List<ShoppingCart> subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
         ShoppingCart shoppingCart = new ShoppingCart();
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
         Long userId = BaseContext.getCurrentId();
@@ -96,11 +96,5 @@ public class ShopingCartServiceImpl implements ShoppoingCartService {
                 shoppingCartMapper.deleteById(cartItem.getId());
             }
         }
-
-
-
-
-
-        return null;
     }
 }

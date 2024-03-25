@@ -46,8 +46,8 @@ public class ShoppingCartController {
     @PostMapping("/sub")
     @ApiOperation("删除购物车中一件商品")
     public Result<List<ShoppingCart>> deleteOne(@RequestBody ShoppingCartDTO shoppingCartDTO){
-        List<ShoppingCart> list = shoppingCartService.subShoppingCart(shoppingCartDTO);
-        return Result.success(list);
+        shoppingCartService.subShoppingCart(shoppingCartDTO);
+        return Result.success();
     }
 
 }
