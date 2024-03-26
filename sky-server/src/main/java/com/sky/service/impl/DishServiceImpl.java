@@ -137,8 +137,8 @@ public class DishServiceImpl implements DishService {
         if (flavors != null && !flavors.isEmpty()) {
             flavors.forEach(dishFlavor -> {
                 dishFlavor.setDishId(dishDTO.getId());
-                dishFlavorMapper.insertFlavor(flavors);
             });
+            dishFlavorMapper.insertFlavor(flavors);
         }
 
     }
